@@ -20,9 +20,9 @@ from sklearn.metrics import precision_score as precision, recall_score as recall
 folds = 6
 kf = KFold(n_splits = folds, shuffle = True, random_state = 0)
 
-knn = KNeighborsClassifier(n_neighbors = neighbors, weights = 'distance') #distance chosen through hyperparameter testing
-neighbors = 18 #18 neighbors chosen through hyperparameter testing
 
+neighbors = 18 #18 neighbors chosen through hyperparameter testing
+knn = KNeighborsClassifier(n_neighbors = neighbors, weights = 'distance') #distance chosen through hyperparameter testing
 
 sum_f = 0
 sum_acc = 0
@@ -42,7 +42,6 @@ for i, (train_index, test_index) in enumerate(kf.split(wildfire_df_X)):
     ps = precision(working_test_y, pred, pos_label = 'fire')
     rs = recall(working_test_y, pred, pos_label = 'fire')
     f_beta = (1+beta**2)*ps*rs/(beta**2*ps+rs)
-    #print(f"Fold {i}: {f_beta}")
     sum_f += f_beta
     sum_acc += acc(working_test_y, pred)
 
@@ -52,3 +51,35 @@ print(f"Average weighted f1 for 'fire' = {f_beta_avg}")
 #prints Average weighted f1 for 'fire' = 0.4038476588861058
 print(f"Average accuracy = {acc_avg}")
 #prints Average accuracy = 0.8190426532531796
+
+#Create and train a random forest (seems appropriate given what we're investigating)
+from sklearn.ensemble import RandomForestClassifier
+
+trees = 330 #chosen through hyperparameter testing
+
+sum_f = 0
+sum_acc = 0
+rf = RandomForestClassifier(n_estimators=trees, max_features=2, random_state=0)
+
+for i, (train_index, test_index) in enumerate(kf.split(wildfire_df_X)):
+
+    working_train_X = wildfire_df_X.iloc[train_index]
+    working_train_y = wildfire_df_y.iloc[train_index]
+
+    working_test_X = wildfire_df_X.iloc[test_index]
+    working_test_y = wildfire_df_y.iloc[test_index]
+
+    rf.fit(working_train_X, working_train_y.values.ravel())
+    pred_rf=rf.predict(working_test_X)
+    ps = precision(working_test_y, pred_rf, pos_label = 'fire')
+    rs = recall(working_test_y, pred_rf, pos_label = 'fire')
+    f_beta = (1+beta**2)*ps*rs/(beta**2*ps+rs)
+    sum_f += f_beta
+    sum_acc += acc(working_test_y, pred_rf)
+
+acc_avg = sum_acc/folds
+f_beta_avg = sum_f/folds
+print(f"Average weighted f1 for 'fire' = {f_beta_avg}")
+#prints Average weighted f1 for 'fire' = 0.5198478937874957
+print(f"Average accuracy = {acc_avg}")
+#prints Average accuracy = 0.8371242792295425
