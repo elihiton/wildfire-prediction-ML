@@ -104,3 +104,34 @@ print(f"Average weighted f_2 score for 'fire' over knn = {f_beta_avg}")
 #prints Average weighted f1 for 'fire' = 0.45799357647183725
 print(f"Average accuracy over knn = {acc_avg}")
 #prints Average accuracy = 0.7804850120639596
+
+
+#re-running random forest with more balanced classes
+sum_f = 0
+sum_acc = 0 #reinitialize metrics
+rf = RandomForestClassifier(n_estimators=trees, max_features=2, random_state=0) #reinitialize classifier
+for i, (train_index, test_index) in enumerate(kf.split(wildfire_df_X)):
+    working_train = wildfire_df.iloc[train_index]
+    working_test = wildfire_df.iloc[test_index]
+    train_group = working_train.groupby(wildfire_df.CLASS)
+    train_fire = train_group.get_group("fire")
+    train_nf = train_group.get_group("no_fire")
+    train_nf_downsampled = resample(train_nf, replace=False, n_samples=round(len(train_nf)*downsample_rate), random_state = 0)
+    working_train = pd.concat([train_fire, train_nf_downsampled])
+    working_train_X = working_train.iloc[:,:3]
+    working_train_y = working_train.iloc[:,3:]
+    working_test_X = working_test.iloc[:,:3]
+    working_test_y = working_test.iloc[:,3:]
+    rf.fit(working_train_X, working_train_y.values.ravel())
+    pred_rf=rf.predict(working_test_X)
+    ps = precision(working_test_y, pred_rf, pos_label = 'fire')
+    rs = recall(working_test_y, pred_rf, pos_label = 'fire')
+    f_beta = (1+beta**2)*ps*rs/(beta**2*ps+rs)
+    sum_f += f_beta
+    sum_acc += acc(working_test_y, pred_rf)
+acc_avg = sum_acc/folds
+f_beta_avg = sum_f/folds
+print(f"Average weighted f_2 for 'fire' over rf = {f_beta_avg}")
+#prints Average weighted f_2 for 'fire' = 0.5834531412212446
+print(f"Average accuracy over rf= {acc_avg}")
+#prints Average accuracy = 0.8272113851061219
