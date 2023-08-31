@@ -8,3 +8,8 @@
 
 
 ![Alt text](figures/all_parameters.png)
+
+![Alt text](figures/burn_area_vs_lst.png)
+
+![Alt text](figures/LST_vs_NDVI.png)
+
