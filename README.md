@@ -7,7 +7,7 @@
 [Github repository with data](https://github.com/ouladsayadyounes/Wildfires)
 
 
-I am choosing to use the generalized $f_{\Beta}$ metric with $\Beta=2$ to weight recall more heavily. This places more emphasis on the model's ability to correctly identify a "fire" instance as a fire. I'm assuming that the cost of verifying a wildfire's presence is much lower than the cost of a wildfire being missed or ignored by a deployed model. 
+I am choosing to use the generalized $f_{\beta}$ metric with $\beta=2$ to weight recall more heavily. This places more emphasis on the model's ability to correctly identify a "fire" instance as a fire. I'm assuming that the cost of verifying a wildfire's presence is much lower than the cost of a wildfire being missed or ignored by a deployed model. 
 
 
 ![Alt text](figures/all_parameters.png)
