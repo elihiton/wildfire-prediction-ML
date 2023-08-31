@@ -7,4 +7,4 @@
 [Github repository with data](https://github.com/ouladsayadyounes/Wildfires)
 
 
-![Alt text](figures/all parameters.png?raw=true)
+![Alt text](figures/all parameters.png)
