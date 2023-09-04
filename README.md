@@ -22,8 +22,6 @@ In the original paper, they had a class split of 386:418 fire:no_fire. Conversel
 
 
 ## Results
-In addition to measuring accuracy, I am choosing to use the generalized $f_{\beta}$ metric with $\beta=2$ to weight recall more heavily. This places more emphasis on the model's ability to correctly identify a "fire" instance as a fire. I'm assuming that the cost of verifying a wildfire's presence is much lower than the cost of a wildfire being missed or ignored by a deployed model. 
+In addition to measuring accuracy, I am choosing to use the generalized $f_{\beta}$ metric with $\beta=2$ to weight recall more heavily. This places more emphasis on the model's ability to correctly identify a "fire" instance as a fire. I'm assuming that the cost of verifying a wildfire's presence is much lower than the cost of a wildfire being missed or ignored by a deployed model. Before implementing the class rebalancing, the KNN acheived an average accuracy of 81.9% accross the 6-folds and an average $f_{2}$ score of 40.38%. The random forest performed slightly better achieving an average accuracy of 83.71% and an average $f_{2}$ score of 51.98%. The low $f_{2}$ scores for both of these models indicate that they are failing to catch many "fire" queries. I hoped that by balancing the classes, I would be able to improve the "fire" recall without negatively impacting accuracy too much. When I implemented the downsampling, the KNN averaged an accuracy of 78.05% and an $f_{2}$ score of 45.8%. The random forest recorded an average accuracy of 82.72% and average $f_{2}$ score of 58.35%. This supports my hypothesis that running the models with more balanced classes would improve their ability to detect "fire" instances. 
 
-
-
-
+On this dataset, I found KNNs and random forests to far underperform the neural nets and SVMs used by the original researchers. While KNNs and random forests have the advantages of training efficiency and ease of implementation, in this case, the consequent loss of predictive power is too great to suggest usefulness for classifying wildfires based on the parameters in this dataset.
